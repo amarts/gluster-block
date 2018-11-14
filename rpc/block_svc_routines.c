@@ -611,11 +611,18 @@ glusterBlockCallRPC_1(char *host, void *cobj,
     }
   } else {
     if (GB_ALLOC(obj) < 0) {
+      if (res) {
+        freeaddrinfo(res);
+      }
       return -1;
     }
     obj->capMax = reply.xdata.xdata_len/sizeof(gbCapObj);
     gbCapObj *caps = (gbCapObj *)reply.xdata.xdata_val;
     if (GB_ALLOC_N(obj->response, obj->capMax) < 0) {
+      GB_FREE(obj);
+      if (res) {
+        freeaddrinfo(res);
+      }
       return -1;
     }
     for (i = 0; i < obj->capMax; i++) {
