@@ -13,6 +13,23 @@
 # define   _UTILS_H   1
 
 # define   _GNU_SOURCE         /* See feature_test_macros(7) */
+
+/* For the easier coverity compilation */
+#ifndef __COVERITY_GCC_VERSION_AT_LEAST
+    #define __COVERITY_GCC_VERSION_AT_LEAST(x, y) 0
+    #define FAKE__COVERITY_GCC_VERSION_AT_LEAST__
+#endif /* __COVERITY_GCC_VERSION_AT_LEAST */
+#ifdef __x86_64__
+    #if __COVERITY_GCC_VERSION_AT_LEAST(7, 0)
+        typedef float _Float128 __attribute__((__vector_size__(128)));
+        typedef float _Float32 __attribute__((__vector_size__(32)));
+        typedef float _Float32x __attribute__((__vector_size__(32)));
+        typedef float _Float64 __attribute__((__vector_size__(64)));
+        typedef float _Float64x __attribute__((__vector_size__(64)));
+    #endif
+#endif
+/* end of coverity */
+
 # include  <stdio.h>
 
 # include  <stdlib.h>
@@ -29,6 +46,7 @@
 # include  <inttypes.h>
 
 # include  "list.h"
+# define Float128 float
 
 # define  GB_LOGROTATE_PATH      "/etc/logrotate.d/gluster-block"
 # define  GB_LOGDIR_DEF          DATADIR "/log/gluster-block"
@@ -721,5 +739,6 @@ char *glusterBlockDynConfigGetLogDir(void);
 void glusterBlockDestroyConfig(struct gbConfig *cfg);
 
 gbConfig *glusterBlockSetupConfig(void);
+
 
 #endif  /* _UTILS_H */
